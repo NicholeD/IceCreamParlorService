@@ -1,16 +1,15 @@
 package com.kenzie.inmemorycaching.kenziegaming.dao;
 
-import com.kenzie.inmemorycaching.kenziegaming.dao.models.*;
-
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBQueryExpression;
 import com.amazonaws.services.dynamodbv2.model.AttributeValue;
 import com.google.common.collect.ImmutableMap;
+import com.kenzie.inmemorycaching.kenziegaming.dao.models.*;
 
+import javax.inject.Inject;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 
 /**
  * Manages access to GroupMembership items.
@@ -64,6 +63,10 @@ public class GroupMembershipDao {
         membership = mapper.load(membership);
 
         return membership != null;
+    }
+
+    public boolean isUserInGroup(final GroupMembershipCacheKey key) {
+        return isUserInGroup(key.getUserId(), key.getGroupId());
     }
 
     /**

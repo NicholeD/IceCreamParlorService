@@ -1,13 +1,12 @@
 package com.kenzie.inmemorycaching.kenziegaming;
 
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import com.kenzie.inmemorycaching.kenziegaming.activity.CheckUserInGroupActivity;
 import com.kenzie.inmemorycaching.kenziegaming.dao.GroupMembershipCachingDao;
 import com.kenzie.inmemorycaching.kenziegaming.dao.GroupMembershipDao;
 import com.kenzie.inmemorycaching.kenziegaming.dao.models.GroupMembership;
 import com.kenzie.test.infrastructure.reflect.ConstructorQuery;
 import com.kenzie.test.infrastructure.reflect.MethodInvoker;
-
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +14,10 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class Phase2Test {
 
@@ -29,7 +26,7 @@ public class Phase2Test {
     private DynamoDBMapper mapper = mock(DynamoDBMapper.class);
 
     @BeforeEach
-    private void setup() throws Exception {
+    void setup() throws Exception {
         Class clazz = CheckUserInGroupActivity.class;
 
         GroupMembershipDao groupMembershipDao = new GroupMembershipDao(mapper);

@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class GroupMembershipCachingDaoTest {
     @Mock
@@ -29,25 +29,43 @@ public class GroupMembershipCachingDaoTest {
 
     // Rename this method
     @Test
-    public void test1() {
+    public void isUserInGroup_returnsTrue() {
         // Implement your test here
         // GIVEN
+        List<String> groupIdsForUser = new ArrayList<>();
+        groupIdsForUser.add("groupWhatIHadForBreakfast");
+        groupIdsForUser.add("groupThingsMyCatTellsMe");
+        groupIdsForUser.add("groupABC");
+
+        GroupMembershipCacheKey cacheKey = new GroupMembershipCacheKey("user123", "groupABC");
+
+        when(membershipDao.getGroupIdsForUser(any())).thenReturn(groupIdsForUser);
 
         // WHEN
 
+        cachingMembershipDao = new GroupMembershipCachingDao(membershipDao);
+        boolean inGroup = cachingMembershipDao.isUserInGroup(cacheKey).contains(cacheKey.getGroupId());
+
         // THEN
-        assertTrue(false);
+        verify(membershipDao, times(1)).getGroupIdsForUser(cacheKey.getUserId());
+        assertTrue(inGroup);
     }
 
     // Rename this method
     @Test
-    public void test2() {
+    public void groupMembershipCaching_notNull() {
         // Implement your test here
         // GIVEN
+        List<String> groupIdsForUser = new ArrayList<>();
+        groupIdsForUser.add("groupWhatIHadForBreakfast");
+        groupIdsForUser.add("groupThingsMyCatTellsMe");
+
+        when(membershipDao.getGroupIdsForUser(any())).thenReturn(groupIdsForUser);
 
         // WHEN
+        cachingMembershipDao = new GroupMembershipCachingDao(membershipDao);
 
         // THEN
-        assertTrue(false);
+        assertNotNull(cachingMembershipDao);
     }
 }
