@@ -1,9 +1,9 @@
 package com.kenzie.lambdaexpressions.pricemanager;
 
 import java.math.BigDecimal;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Computes total prices/costs that incorporate fees/taxes that apply
@@ -11,6 +11,8 @@ import java.util.List;
  * for different scenarios including multiple fees and/or a sales tax.
  */
 public class PriceManager {
+
+    private PriceCalculator priceCalculator = new PriceCalculator();;
 
     /**
      * Main method. When completed it should print to standard output the new prices of the items.
@@ -52,10 +54,9 @@ public class PriceManager {
      * @return List of new prices calculated
      */
     public List<BigDecimal> calculateStateTotalPrices(List<BigDecimal> prices, BigDecimal salesTax) {
-        // TODO Call PriceCalculator's method calculateTotalPrices by giving an argument that is a lambda expression
-        //  implementing the Function interface. Alter the return statement to return the total prices calculated. Refer
-        //  to the instructions for assistance in calculating the prices correctly.
-        return prices;
+        Function<BigDecimal, BigDecimal> calculate = price -> price.multiply(salesTax);
+
+        return priceCalculator.calculateTotalPrices(prices, calculate);
     }
 
     /**
@@ -67,10 +68,9 @@ public class PriceManager {
      */
     public List<BigDecimal> calculateStateTotalPrices(List<BigDecimal> prices, BigDecimal setupFee, BigDecimal
             salesTax) {
-        // TODO Call PriceCalculator's method calculateTotalPrices by giving an argument that is a lambda expression
-        //  implementing the Function interface. Alter the return statement to return the total prices calculated. Refer
-        //  to the instructions for assistance in calculating the prices correctly.
-        return prices;
+        Function<BigDecimal, BigDecimal> calculate = price -> price.add(setupFee).multiply(salesTax);
+
+        return priceCalculator.calculateTotalPrices(prices, calculate);
     }
 
     /**
@@ -83,9 +83,8 @@ public class PriceManager {
      */
     public List<BigDecimal> calculateStateTotalPrices(List<BigDecimal> prices, BigDecimal setupFee, BigDecimal salesFee,
                                                       BigDecimal countyFee) {
-        // TODO Call PriceCalculator's method calculateTotalPrices by giving an argument that is a lambda expression
-        //  implementing the Function interface. Alter the return statement to return the total prices calculated. Refer
-        //  to the instructions for assistance in calculating the prices correctly.
-        return prices;
+        Function<BigDecimal, BigDecimal> calculate = price -> price.add(setupFee).add(salesFee).add(countyFee);
+
+        return priceCalculator.calculateTotalPrices(prices, calculate);
     }
 }
