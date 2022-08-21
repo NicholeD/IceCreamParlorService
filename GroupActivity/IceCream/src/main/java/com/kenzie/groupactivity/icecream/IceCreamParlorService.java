@@ -1,5 +1,7 @@
 package com.kenzie.groupactivity.icecream;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.kenzie.groupactivity.icecream.converter.RecipeConverter;
 import com.kenzie.groupactivity.icecream.dao.CartonDao;
 import com.kenzie.groupactivity.icecream.dao.RecipeDao;
 import com.kenzie.groupactivity.icecream.exception.CartonCreationFailedException;
@@ -9,14 +11,11 @@ import com.kenzie.groupactivity.icecream.model.Ingredient;
 import com.kenzie.groupactivity.icecream.model.Recipe;
 import com.kenzie.groupactivity.icecream.model.Sundae;
 
-import com.google.common.annotations.VisibleForTesting;
-
-import java.util.ArrayList;
+import javax.inject.Inject;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
 
 /**
  * Provides Ice Cream Parlor functionality.
@@ -51,19 +50,14 @@ public class IceCreamParlorService {
         // This does the filtering out of any unknown flavors, so only
         // Cartons of known flavors will be returned.
         List<Carton> cartons = cartonDao.getCartonsByFlavorNames(flavorNames);
-
-        // PHASE 1: Use removeIf() to remove any empty cartons from cartons
-
+        cartons.removeIf(Carton::isEmpty);
         return buildSundae(cartons);
     }
 
     @VisibleForTesting
     public Sundae buildSundae(List<Carton> cartons) {
         Sundae sundae = new Sundae();
-
-        // PHASE 2: Use forEach() to add one scoop of each flavor
-        // remaining in cartons
-
+        cartons.forEach(carton -> sundae.addScoop(carton.getFlavor()));
         return sundae;
     }
 
@@ -92,10 +86,7 @@ public class IceCreamParlorService {
                     }
                 }
         );
-
-        // PHASE 3: Replace right-hand side: use map() to convert List<Recipe> to List<Queue<Ingredient>>
-        List<Queue<Ingredient>> ingredientQueues = new ArrayList<>();
-
+        List<Queue<Ingredient>> ingredientQueues = map(recipes, RecipeConverter::fromRecipeToIngredientQueue);
         return makeIceCreamCartons(ingredientQueues);
     }
 
